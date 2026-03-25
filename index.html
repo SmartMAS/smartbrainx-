@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartBrainX – Abacus & Mental Arithmetic</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:#0d1f3c; --navy-mid:#162d54; --gold:#e8a820; --gold-lt:#f5c84a;
+      --cream:#fdf8f0; --white:#ffffff; --text:#1a1a2e; --muted:#5a6478; --border:#e2ddd4;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--text); overflow-x:hidden; }
+
+```
+/* NAV */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:rgba(13,31,60,0.97); backdrop-filter:blur(10px);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 6vw; height:70px; border-bottom:1px solid rgba(232,168,32,0.2);
+}
+.nav-logo { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; color:var(--white); }
+.nav-logo span { color:var(--gold); }
+.nav-links { display:flex; gap:2.5rem; list-style:none; }
+.nav-links a { color:rgba(255,255,255,0.7); text-decoration:none; font-size:0.875rem; font-weight:500; letter-spacing:0.04em; transition:color 0.2s; }
+.nav-links a:hover { color:var(--gold); }
+.nav-cta { background:var(--gold); color:var(--navy); padding:0.5rem 1.4rem; border-radius:4px; font-weight:600; font-size:0.85rem; text-decoration:none; transition:background 0.2s,transform 0.15s; }
+.nav-cta:hover { background:var(--gold-lt); transform:translateY(-1px); }
+
+/* HERO */
+.hero { min-height:100vh; background:var(--navy); display:flex; flex-direction:column; justify-content:center; padding:120px 6vw 80px; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 60% 60% at 80% 50%,rgba(232,168,32,0.08) 0%,transparent 70%),radial-gradient(ellipse 40% 80% at 10% 80%,rgba(22,45,84,0.9) 0%,transparent 60%); pointer-events:none; }
+.hero-grid { position:absolute; right:6vw; top:50%; transform:translateY(-50%); opacity:0.06; display:grid; grid-template-columns:repeat(5,1fr); gap:18px; pointer-events:none; }
+.hero-grid-bead { width:28px; height:28px; border-radius:50%; background:var(--gold); }
+.hero-content { position:relative; z-index:2; max-width:620px; animation:fadeUp 0.8s ease both; }
+.hero-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(232,168,32,0.12); border:1px solid rgba(232,168,32,0.3); color:var(--gold); padding:6px 14px; border-radius:100px; font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:2rem; }
+.hero-badge::before { content:'●'; font-size:0.5rem; animation:pulse 2s infinite; }
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+h1 { font-family:'Playfair Display',serif; font-size:clamp(2.4rem,5vw,4rem); font-weight:700; line-height:1.1; color:var(--white); margin-bottom:1.5rem; }
+h1 em { font-style:normal; color:var(--gold); border-bottom:3px solid rgba(232,168,32,0.4); }
+.hero-sub { font-size:1.05rem; line-height:1.75; color:rgba(255,255,255,0.6); max-width:520px; margin-bottom:1.5rem; font-weight:300; }
+.hero-tagline { font-family:'Playfair Display',serif; font-style:italic; font-size:1rem; color:var(--gold); opacity:0.85; margin-bottom:2.5rem; }
+.hero-actions { display:flex; gap:1rem; flex-wrap:wrap; }
+.btn-primary { background:var(--gold); color:var(--navy); padding:0.85rem 2rem; border-radius:4px; font-weight:600; font-size:0.95rem; text-decoration:none; transition:background 0.2s,transform 0.15s,box-shadow 0.2s; box-shadow:0 4px 20px rgba(232,168,32,0.3); }
+.btn-primary:hover { background:var(--gold-lt); transform:translateY(-2px); box-shadow:0 8px 30px rgba(232,168,32,0.4); }
+.btn-outline { background:transparent; border:1.5px solid rgba(255,255,255,0.3); color:var(--white); padding:0.85rem 2rem; border-radius:4px; font-weight:500; font-size:0.95rem; text-decoration:none; transition:border-color 0.2s,color 0.2s; }
+.btn-outline:hover { border-color:var(--gold); color:var(--gold); }
+.hero-stats { display:flex; gap:3rem; flex-wrap:wrap; margin-top:3.5rem; padding-top:2rem; border-top:1px solid rgba(255,255,255,0.08); animation:fadeUp 0.9s 0.3s ease both; }
+.stat { display:flex; flex-direction:column; gap:4px; }
+.stat-num { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--gold); line-height:1; }
+.stat-label { font-size:0.78rem; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:0.08em; font-weight:500; }
+
+/* SHARED */
+section { padding:100px 6vw; }
+.section-label { display:inline-block; font-size:0.72rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; }
+h2 { font-family:'Playfair Display',serif; font-size:clamp(1.9rem,3.5vw,2.8rem); font-weight:700; line-height:1.2; color:var(--navy); margin-bottom:1.2rem; }
+.section-intro { font-size:1.05rem; color:var(--muted); max-width:560px; line-height:1.8; font-weight:300; }
+
+/* WHY */
+.why { background:var(--white); }
+.why-inner { display:grid; grid-template-columns:1fr 1fr; gap:6vw; align-items:center; }
+.why-visual { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; padding:3rem; background:var(--navy); border-radius:12px; position:relative; overflow:hidden; }
+.why-visual::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 30% 70%,rgba(232,168,32,0.15) 0%,transparent 60%); }
+.abacus-col { display:flex; flex-direction:column; align-items:center; gap:10px; }
+.abacus-rod { width:3px; height:160px; background:rgba(255,255,255,0.15); border-radius:2px; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:space-around; padding:8px 0; }
+.bead { width:22px; height:22px; border-radius:50%; background:var(--gold); position:absolute; left:50%; transform:translateX(-50%); box-shadow:0 2px 8px rgba(232,168,32,0.4); }
+.bead.b1{top:8px}.bead.b2{top:36px;background:rgba(232,168,32,0.5)}.bead.b3{top:64px}.bead.b4{top:92px;background:rgba(232,168,32,0.5)}.bead.b5{top:120px}
+.abacus-num { font-family:'Playfair Display',serif; color:rgba(255,255,255,0.4); font-size:0.85rem; margin-top:6px; z-index:2; }
+.why-points { margin-top:2rem; display:flex; flex-direction:column; gap:1.4rem; }
+.why-point { display:flex; gap:1rem; align-items:flex-start; }
+.why-icon { flex-shrink:0; width:40px; height:40px; background:rgba(232,168,32,0.1); border:1px solid rgba(232,168,32,0.25); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+.why-point-text h4 { font-size:0.95rem; font-weight:600; color:var(--navy); margin-bottom:3px; }
+.why-point-text p { font-size:0.875rem; color:var(--muted); line-height:1.6; }
+
+/* BENEFITS */
+.benefits { background:var(--navy); }
+.benefits-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-top:3rem; }
+.benefit-card { background:rgba(255,255,255,0.04); border:1px solid rgba(232,168,32,0.15); border-radius:10px; padding:1.5rem; display:flex; align-items:center; gap:1rem; transition:background 0.25s,border-color 0.25s; }
+.benefit-card:hover { background:rgba(232,168,32,0.07); border-color:rgba(232,168,32,0.35); }
+.benefit-num { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; color:var(--gold); opacity:0.5; flex-shrink:0; width:32px; line-height:1; }
+.benefit-label { font-size:0.9rem; font-weight:500; color:var(--white); line-height:1.35; }
+
+/* SERVICES */
+.services { background:var(--cream); }
+.services-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:3.5rem; flex-wrap:wrap; gap:1rem; }
+.services-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5px; background:var(--border); border:1.5px solid var(--border); border-radius:12px; overflow:hidden; }
+.service-card { background:var(--white); padding:2.5rem 2rem; transition:background 0.25s; cursor:default; }
+.service-card:hover { background:var(--navy); }
+.service-card:hover .sc-title,.service-card:hover .sc-desc { color:rgba(255,255,255,0.8); }
+.service-card:hover .sc-title { color:var(--white); }
+.service-card:hover .sc-num { color:rgba(232,168,32,0.3); }
+.service-card:hover .sc-icon-wrap { background:rgba(232,168,32,0.15); border-color:rgba(232,168,32,0.3); }
+.sc-num { font-family:'Playfair Display',serif; font-size:3.5rem; font-weight:700; color:rgba(13,31,60,0.06); line-height:1; margin-bottom:-0.5rem; transition:color 0.25s; }
+.sc-icon-wrap { width:46px; height:46px; background:rgba(232,168,32,0.08); border:1px solid rgba(232,168,32,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:1.2rem; transition:background 0.25s,border-color 0.25s; }
+.sc-title { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:600; color:var(--navy); margin-bottom:0.75rem; transition:color 0.25s; }
+.sc-desc { font-size:0.875rem; line-height:1.7; color:var(--muted); margin-bottom:1.5rem; transition:color 0.25s; }
+.sc-tag { font-size:0.72rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); }
+
+/* PROCESS */
+.process { background:var(--cream); }
+.process-steps { display:grid; grid-template-columns:repeat(4,1fr); margin-top:4rem; position:relative; }
+.process-steps::before { content:''; position:absolute; top:28px; left:12.5%; right:12.5%; height:1px; background:linear-gradient(to right,transparent,rgba(232,168,32,0.4),transparent); }
+.process-step { display:flex; flex-direction:column; align-items:center; text-align:center; padding:0 1.5rem; }
+.step-circle { width:56px; height:56px; border-radius:50%; background:rgba(232,168,32,0.08); border:1.5px solid rgba(232,168,32,0.4); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:var(--gold); margin-bottom:1.5rem; position:relative; z-index:1; }
+.step-title { font-weight:600; font-size:0.95rem; color:var(--navy); margin-bottom:0.6rem; }
+.step-desc { font-size:0.825rem; color:var(--muted); line-height:1.65; }
+
+/* CTA */
+.cta-section { background:var(--white); display:flex; align-items:center; justify-content:center; text-align:center; }
+.cta-inner { max-width:680px; }
+.cta-inner h2 { margin-bottom:1rem; }
+.cta-inner > p { font-size:1.05rem; color:var(--muted); line-height:1.75; margin-bottom:2rem; }
+.cta-contact-block { display:flex; justify-content:center; gap:2.5rem; flex-wrap:wrap; margin-bottom:2rem; }
+.cta-contact-item { display:flex; align-items:center; gap:0.5rem; font-size:1rem; font-weight:600; color:var(--navy); }
+.cta-contact-item a { color:var(--navy); text-decoration:none; transition:color 0.2s; }
+.cta-contact-item a:hover { color:var(--gold); }
+.cta-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-bottom:2.5rem; }
+.btn-dark { background:var(--navy); color:var(--white); padding:0.9rem 2.2rem; border-radius:4px; font-weight:600; font-size:0.95rem; text-decoration:none; transition:background 0.2s,transform 0.15s; }
+.btn-dark:hover { background:var(--navy-mid); transform:translateY(-2px); }
+.social-row { display:flex; justify-content:center; gap:0.75rem; flex-wrap:wrap; padding-top:1.5rem; border-top:1px solid var(--border); }
+.social-chip { display:inline-flex; align-items:center; gap:0.5rem; background:var(--cream); border:1px solid var(--border); border-radius:100px; padding:0.4rem 1rem; font-size:0.78rem; font-weight:600; color:var(--navy); text-decoration:none; transition:background 0.2s,border-color 0.2s,color 0.2s; }
+.social-chip:hover { background:var(--navy); color:var(--white); border-color:var(--navy); }
+
+/* FOOTER */
+footer { background:var(--navy); padding:3rem 6vw 2rem; border-top:1px solid rgba(232,168,32,0.15); }
+.footer-top { display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:2rem; margin-bottom:2rem; }
+.footer-logo { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:var(--white); }
+.footer-logo span { color:var(--gold); }
+.footer-tagline { font-family:'Playfair Display',serif; font-style:italic; color:rgba(255,255,255,0.4); font-size:0.9rem; margin-top:0.4rem; }
+.footer-col h5 { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:rgba(255,255,255,0.35); margin-bottom:1rem; font-weight:600; }
+.footer-links { display:flex; flex-direction:column; gap:0.6rem; list-style:none; }
+.footer-links a { font-size:0.85rem; color:rgba(255,255,255,0.5); text-decoration:none; transition:color 0.2s; }
+.footer-links a:hover { color:var(--gold); }
+.footer-contact-list { display:flex; flex-direction:column; gap:0.6rem; }
+.footer-contact-list a { font-size:0.85rem; color:rgba(255,255,255,0.55); text-decoration:none; transition:color 0.2s; }
+.footer-contact-list a:hover { color:var(--gold); }
+.footer-social-icons { display:flex; gap:0.75rem; flex-wrap:wrap; }
+.fsocial { width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.5); text-decoration:none; transition:background 0.2s,color 0.2s,border-color 0.2s; }
+.fsocial:hover { background:rgba(232,168,32,0.15); color:var(--gold); border-color:rgba(232,168,32,0.3); }
+.footer-bottom { border-top:1px solid rgba(255,255,255,0.07); padding-top:1.5rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; }
+.footer-copy { font-size:0.78rem; color:rgba(255,255,255,0.25); }
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:900px){
+  .why-inner{grid-template-columns:1fr} .why-visual{display:none}
+  .services-grid{grid-template-columns:1fr} .benefits-grid{grid-template-columns:1fr 1fr}
+  .process-steps{grid-template-columns:1fr 1fr;gap:2.5rem} .process-steps::before{display:none}
+  .nav-links{display:none} .footer-top{flex-direction:column}
+}
+@media(max-width:560px){
+  h1{font-size:2.2rem} .benefits-grid{grid-template-columns:1fr}
+  .process-steps{grid-template-columns:1fr} .cta-contact-block{flex-direction:column;align-items:center}
+}
+```
+
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+
+<nav>
+  <div class="nav-logo">Smart<span>BrainX</span></div>
+  <ul class="nav-links">
+    <li><a href="#why">Why Abacus</a></li>
+    <li><a href="#benefits">Benefits</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="tel:+2349031735461" class="nav-cta">Enrol Now</a>
+</nav>
+
+<!-- HERO -->
+
+<section class="hero" id="home">
+  <div class="hero-grid" aria-hidden="true">
+    <div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div>
+    <div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div>
+    <div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div>
+    <div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div>
+    <div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div><div class="hero-grid-bead"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">Abacus &amp; Mental Arithmetic</div>
+    <h1>Unlock Your Child's<br/><em>Mental Potential</em></h1>
+    <p class="hero-sub">SmartBrainX uses the ancient power of the abacus to sharpen concentration, boost memory, and build exceptional mental arithmetic skills in children.</p>
+    <p class="hero-tagline">"Every Child Is A Prodigy"</p>
+    <div class="hero-actions">
+      <a href="tel:+2349031735461" class="btn-primary">Enrol Your Child</a>
+      <a href="#services" class="btn-outline">Explore Services</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">500+</span><span class="stat-label">Children Trained</span></div>
+    <div class="stat"><span class="stat-num">95%</span><span class="stat-label">Improved Focus</span></div>
+    <div class="stat"><span class="stat-num">10x</span><span class="stat-label">Faster Calculation</span></div>
+    <div class="stat"><span class="stat-num">3-15</span><span class="stat-label">Age Range</span></div>
+  </div>
+</section>
+
+<!-- WHY ABACUS -->
+
+<section class="why" id="why">
+  <div class="why-inner">
+    <div class="why-visual" aria-hidden="true">
+      <div class="abacus-col"><div class="abacus-rod"><div class="bead b1"></div><div class="bead b3"></div><div class="bead b5"></div></div><span class="abacus-num">I</span></div>
+      <div class="abacus-col"><div class="abacus-rod"><div class="bead b1"></div><div class="bead b2"></div><div class="bead b4"></div></div><span class="abacus-num">II</span></div>
+      <div class="abacus-col"><div class="abacus-rod"><div class="bead b2"></div><div class="bead b3"></div><div class="bead b5"></div></div><span class="abacus-num">III</span></div>
+      <div class="abacus-col"><div class="abacus-rod"><div class="bead b1"></div><div class="bead b4"></div></div><span class="abacus-num">IV</span></div>
+      <div class="abacus-col"><div class="abacus-rod"><div class="bead b2"></div><div class="bead b3"></div></div><span class="abacus-num">V</span></div>
+    </div>
+    <div>
+      <span class="section-label">The Science Behind It</span>
+      <h2>Why the Abacus Works</h2>
+      <p class="section-intro">The abacus is more than a calculation tool — it is a brain-training instrument that engages both hemispheres, creating powerful cognitive pathways in developing minds.</p>
+      <div class="why-points">
+        <div class="why-point"><div class="why-icon">🧠</div><div class="why-point-text"><h4>Whole-Brain Activation</h4><p>Bead manipulation stimulates both left (logic) and right (creative) brain hemispheres simultaneously.</p></div></div>
+        <div class="why-point"><div class="why-icon">🎯</div><div class="why-point-text"><h4>Enhanced Concentration</h4><p>Regular abacus practice significantly extends attention span and focus in children.</p></div></div>
+        <div class="why-point"><div class="why-icon">⚡</div><div class="why-point-text"><h4>Mental Arithmetic Speed</h4><p>Children learn to visualise the abacus mentally, performing rapid calculations without tools.</p></div></div>
+        <div class="why-point"><div class="why-icon">💡</div><div class="why-point-text"><h4>Academic Confidence</h4><p>Improved numeracy and problem-solving skills translate directly into better school performance.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+
+<section class="benefits" id="benefits">
+  <div style="text-align:center;max-width:540px;margin:0 auto 3rem;">
+    <span class="section-label">What Your Child Gains</span>
+    <h2 style="color:var(--white)">9 Life-Changing Benefits</h2>
+    <p class="section-intro" style="margin:0 auto;">Every skill developed through abacus training extends far beyond the classroom.</p>
+  </div>
+  <div class="benefits-grid">
+    <div class="benefit-card"><span class="benefit-num">01</span><span class="benefit-label">Concentration</span></div>
+    <div class="benefit-card"><span class="benefit-num">02</span><span class="benefit-label">Speed and Accuracy</span></div>
+    <div class="benefit-card"><span class="benefit-num">03</span><span class="benefit-label">Retentive Memory</span></div>
+    <div class="benefit-card"><span class="benefit-num">04</span><span class="benefit-label">Listening Skills</span></div>
+    <div class="benefit-card"><span class="benefit-num">05</span><span class="benefit-label">Empowerment Against Maths Phobia</span></div>
+    <div class="benefit-card"><span class="benefit-num">06</span><span class="benefit-label">Visual Memory</span></div>
+    <div class="benefit-card"><span class="benefit-num">07</span><span class="benefit-label">Self Awareness</span></div>
+    <div class="benefit-card"><span class="benefit-num">08</span><span class="benefit-label">Holistic Academic Brilliance</span></div>
+    <div class="benefit-card"><span class="benefit-num">09</span><span class="benefit-label">High Cognitive Abilities</span></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+
+<section class="services" id="services">
+  <div class="services-header">
+    <div><span class="section-label">What We Offer</span><h2>Our Core Services</h2></div>
+    <p class="section-intro" style="max-width:340px;font-size:0.9rem;">Structured programmes for every stage of your child's cognitive journey.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card"><div class="sc-num">01</div><div class="sc-icon-wrap">🔢</div><div class="sc-title">Abacus Training Programme</div><p class="sc-desc">Level-based abacus curriculum from beginner to advanced, teaching children to compute large calculations with speed and accuracy.</p><span class="sc-tag">Ages 5-15 · 10 Levels</span></div>
+    <div class="service-card"><div class="sc-num">02</div><div class="sc-icon-wrap">🧩</div><div class="sc-title">Cognitive Skills Development</div><p class="sc-desc">Targeted exercises that strengthen memory retention, logical reasoning, and creative thinking across all subjects.</p><span class="sc-tag">Ages 3-10 · Weekly Sessions</span></div>
+    <div class="service-card"><div class="sc-num">03</div><div class="sc-icon-wrap">🏫</div><div class="sc-title">School Partnership Programme</div><p class="sc-desc">We partner with schools to integrate abacus-based mental arithmetic into curricula and build a culture of cognitive excellence.</p><span class="sc-tag">Institutional · Custom</span></div>
+    <div class="service-card"><div class="sc-num">04</div><div class="sc-icon-wrap">🏆</div><div class="sc-title">Competition Preparation</div><p class="sc-desc">Intensive coaching for local and international abacus competitions, helping students compete with confidence and world-class skill.</p><span class="sc-tag">Advanced Students</span></div>
+    <div class="service-card"><div class="sc-num">05</div><div class="sc-icon-wrap">👨‍👩‍👧</div><div class="sc-title">Parent Orientation Sessions</div><p class="sc-desc">Guided sessions that help parents understand abacus methodology and reinforce learning at home through simple daily practice.</p><span class="sc-tag">For Families</span></div>
+    <div class="service-card"><div class="sc-num">06</div><div class="sc-icon-wrap">💻</div><div class="sc-title">Online &amp; Hybrid Learning</div><p class="sc-desc">Flexible virtual classes with live instructors for children nationwide — same rigorous curriculum, same results, from home.</p><span class="sc-tag">Virtual · Nationwide</span></div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+
+<section class="process" id="process">
+  <div style="text-align:center;max-width:560px;margin:0 auto;">
+    <span class="section-label">How It Works</span>
+    <h2>From Enrolment to Excellence</h2>
+    <p class="section-intro" style="margin:0 auto;">A clear, structured journey from your child's very first bead to mental arithmetic mastery.</p>
+  </div>
+  <div class="process-steps">
+    <div class="process-step"><div class="step-circle">01</div><div class="step-title">Free Assessment</div><p class="step-desc">We evaluate your child's current level and cognitive strengths to recommend the right starting point.</p></div>
+    <div class="process-step"><div class="step-circle">02</div><div class="step-title">Personalised Enrolment</div><p class="step-desc">Your child is placed in the appropriate class with a tailored learning plan and schedule.</p></div>
+    <div class="process-step"><div class="step-circle">03</div><div class="step-title">Structured Training</div><p class="step-desc">Weekly sessions guided by certified instructors using proven techniques and gamified exercises.</p></div>
+    <div class="process-step"><div class="step-circle">04</div><div class="step-title">Progress &amp; Certification</div><p class="step-desc">Regular assessments, level promotions, and certifications that reward milestones and motivate growth.</p></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+
+<section class="cta-section" id="contact">
+  <div class="cta-inner">
+    <span class="section-label">Get In Touch</span>
+    <h2>Give Your Child the<br/>Cognitive Edge</h2>
+    <p>Join families across Lagos who have seen remarkable improvements in their children's focus, confidence, and academic performance. Enrolment is open — spaces are limited.</p>
+    <div class="cta-contact-block">
+      <div class="cta-contact-item">
+        <span>📞</span><a href="tel:+2349031735461">+2349031735461</a>
+      </div>
+      <div class="cta-contact-item">
+        <span>✉️</span><a href="mailto:Thesmartofficeng@gmail.com">Thesmartofficeng@gmail.com</a>
+      </div>
+    </div>
+    <div class="cta-actions">
+      <a href="tel:+2349031735461" class="btn-primary">📞 Call to Enrol Now</a>
+      <a href="mailto:Thesmartofficeng@gmail.com" class="btn-dark">✉️ Send an Email</a>
+    </div>
+    <div class="social-row">
+      <a href="https://www.facebook.com/share/1CYpwSgDAq/?mibextid=wwXIfr" target="_blank" class="social-chip">
+        <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        SmartMas Abacus Lagos
+      </a>
+      <a href="https://www.instagram.com/smartmas_lagos?igsh=a3pyOGlqMTA1ZGVk&utm_source=qr" target="_blank" class="social-chip">
+        <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        SmartMas Abacus Lagos
+      </a>
+      <a href="https://www.tiktok.com/@smartmas.abacus.l?_r=1&_t=ZS-94y8baq9O42" target="_blank" class="social-chip">
+        <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+        SmartMAS Abacus Lagos
+      </a>
+      <a href="https://x.com/smartmas_lagos?s=21" target="_blank" class="social-chip">
+        <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.258 5.635 5.906-5.635zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        @SmartMas_Lagos
+      </a>
+      <a href="https://www.youtube.com/@SmartMASAbacusLagos" target="_blank" class="social-chip">
+        <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+        SmartMAS Abacus Lagos
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">Smart<span>BrainX</span> Educational Consult Limited</div>
+      <div class="footer-tagline">"Every Child Is A Prodigy"</div>
+    </div>
+    <div class="footer-col">
+      <h5>Navigation</h5>
+      <ul class="footer-links">
+        <li><a href="#why">Why Abacus</a></li>
+        <li><a href="#benefits">Benefits</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#process">Process</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact Us</h5>
+      <div class="footer-contact-list">
+        <a href="tel:+2349031735461">📞 +2349031735461</a>
+        <a href="mailto:Thesmartofficeng@gmail.com">✉️ Thesmartofficeng@gmail.com</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Follow Us</h5>
+      <div class="footer-social-icons">
+        <a class="fsocial" href="https://www.facebook.com/share/1CYpwSgDAq/?mibextid=wwXIfr" target="_blank" title="Facebook"><svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+        <a class="fsocial" href="https://www.instagram.com/smartmas_lagos?igsh=a3pyOGlqMTA1ZGVk&utm_source=qr" target="_blank" title="Instagram"><svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+        <a class="fsocial" href="https://www.tiktok.com/@smartmas.abacus.l?_r=1&_t=ZS-94y8baq9O42" target="_blank" title="TikTok"><svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
+        <a class="fsocial" href="https://x.com/smartmas_lagos?s=21" target="_blank" title="X"><svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.258 5.635 5.906-5.635zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a class="fsocial" href="https://www.youtube.com/@SmartMASAbacusLagos" target="_blank" title="YouTube"><svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">&copy; 2026 SmartBrainX Educational Consult Limited. All rights reserved.</p>
+    <p class="footer-copy">Lagos, Nigeria</p>
+  </div>
+</footer>
+
+</body>
+</html>
